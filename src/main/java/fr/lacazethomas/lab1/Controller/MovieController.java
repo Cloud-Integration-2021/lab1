@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 public class MovieController {
-    
     MovieService movieService;
 
     @Autowired
