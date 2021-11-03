@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MovieServierImpl implements MovieService{
+public class MovieServierImpl implements MovieService {
 
-    private MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
     @Autowired
     public MovieServierImpl(MovieRepository movieRepository) {
@@ -29,7 +29,7 @@ public class MovieServierImpl implements MovieService{
     }
 
     @Override
-    public Movie findById(Long movieId) throws MovieNotFoundException{
+    public Movie findById(Long movieId) throws MovieNotFoundException {
         return movieRepository.findById(movieId).orElseThrow(MovieNotFoundException::new);
     }
 

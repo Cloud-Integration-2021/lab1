@@ -1,4 +1,5 @@
 package fr.lacazethomas.lab1.Exception;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -6,12 +7,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class MovieNotFoundException extends RuntimeException {
     private String message;
 
-    public MovieNotFoundException (String message) {
+    public MovieNotFoundException(String message) {
         super(message);
         this.message = message;
     }
 
-    public MovieNotFoundException(){}
+    public MovieNotFoundException() {
+    }
 
     @Override
     public String getMessage() {
