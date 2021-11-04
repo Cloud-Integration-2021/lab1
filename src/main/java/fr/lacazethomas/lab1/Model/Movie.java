@@ -10,7 +10,7 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private LocalDate date;
+    private LocalDate releaseDate;
 
     public Long getId() {
         return id;
@@ -28,11 +28,11 @@ public class Movie {
         this.title = title;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setReleaseDate(LocalDate date) {
+        this.releaseDate = date;
     }
 }

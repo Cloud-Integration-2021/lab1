@@ -1,48 +1,63 @@
 package fr.lacazethomas.lab1.Controller;
 
 import fr.lacazethomas.lab1.Model.Movie;
-import fr.lacazethomas.lab1.Service.MovieService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import fr.lacazethomas.lab1.Repository.MovieRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/movies")
+@RequiredArgsConstructor
 public class MovieController {
-    MovieService movieService;
 
-    @Autowired
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
+    private final MovieRepository movieRepository;
+
+    public ResponseEntity<?> getAllMovie() {
+        var movies = movieRepository.findAll();
+
+        if(movies.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }else{
+            return ResponseEntity.ok(movies);
+        }
+
     }
 
-    @GetMapping("/movies")
-    public ResponseEntity<List<Movie>> getAllMovie() {
-        return new ResponseEntity<>(movieService.findAll(), HttpStatus.OK);
+    public ResponseEntity<?> addMovie(@RequestBody Movie movie) {
+        movieRepository.save(movie);
+
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/movies")
-    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
-        return new ResponseEntity<>(movieService.save(movie), HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getMovieById(@PathVariable(value = "id") Long movieId) {
+        var movie =  movieRepository.findById(movieId);
+
+        return movie.<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/movies/{id}")
-    public ResponseEntity<Movie> getMovieById(@PathVariable(value = "id") Long movieId) {
-        return new ResponseEntity<>(movieService.findById(movieId), HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMovie(@PathVariable(value = "id") Long movieId, @RequestBody Movie movieDetails) {
+        var movie = movieRepository.findById(movieId);
+
+        if(movie.isPresent()){
+            var _movie = movie.get();
+            _movie.setReleaseDate(movieDetails.getReleaseDate());
+            _movie.setTitle(movieDetails.getTitle());
+            movieRepository.save(_movie);
+            return ResponseEntity.ok().build();
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @PutMapping("/movies/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable(value = "id") Long movieId, @RequestBody Movie movieDetails) {
-        return new ResponseEntity<>(movieService.updateMovie(movieId, movieDetails), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/movies/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable(value = "id") Long movieId) {
-        movieService.deleteMovie(movieId);
+        movieRepository.delete(movieRepository.getById(movieId));
+
         return ResponseEntity.ok().build();
     }
 }
