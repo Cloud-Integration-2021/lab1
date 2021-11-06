@@ -14,7 +14,8 @@ public class MovieController {
 
     private final MovieRepository movieRepository;
 
-    public ResponseEntity<?> getAllMovie() {
+    @GetMapping("")
+    public ResponseEntity<?> getAllMovies() {
         var movies = movieRepository.findAll();
 
         if(movies.isEmpty()){
@@ -25,10 +26,13 @@ public class MovieController {
 
     }
 
-    public ResponseEntity<?> addMovie(@RequestBody Movie movie) {
-        movieRepository.save(movie);
-
-        return ResponseEntity.ok().build();
+    @PostMapping("")
+    public ResponseEntity<?> createMovie(@RequestBody Movie movie) {
+        try {
+            return ResponseEntity.ok(movieRepository.save(movie));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/{id}")
@@ -47,8 +51,11 @@ public class MovieController {
             var _movie = movie.get();
             _movie.setReleaseDate(movieDetails.getReleaseDate());
             _movie.setTitle(movieDetails.getTitle());
-            movieRepository.save(_movie);
-            return ResponseEntity.ok().build();
+            try {
+                return ResponseEntity.ok(movieRepository.save(_movie));
+            }catch (Exception e){
+                return ResponseEntity.internalServerError().build();
+            }
         }else{
             return ResponseEntity.notFound().build();
         }
@@ -56,8 +63,11 @@ public class MovieController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable(value = "id") Long movieId) {
-        movieRepository.delete(movieRepository.getById(movieId));
-
-        return ResponseEntity.ok().build();
+        try{
+            movieRepository.delete(movieRepository.getById(movieId));
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
