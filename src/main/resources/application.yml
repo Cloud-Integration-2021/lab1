@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: "org.postgresql.Driver"
+    url: ${DATASOURCE_DB_URL}
+    username: ${DATASOURCE_DB_USERNAME}
+    password: ${DATASOURCE_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
