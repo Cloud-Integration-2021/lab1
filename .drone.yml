@@ -1,0 +1,17 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: test
+    image: gradle:jdk16
+    environment:
+      DATASOURCE_DB_PASSWORD:
+        from_secret: DATASOURCE_DB_PASSWORD
+      DATASOURCE_DB_URL:
+        from_secret: DATASOURCE_DB_URL
+      DATASOURCE_DB_USERNAME:
+        from_secret: DATASOURCE_DB_USERNAME
+    commands:
+      - printenv
+      - gradle assemble
+      - gradle check
