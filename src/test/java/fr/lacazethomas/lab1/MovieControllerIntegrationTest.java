@@ -33,7 +33,7 @@ public class MovieControllerIntegrationTest {
 
     @Test
     public void testGetAllActors() throws Exception {
-        mockMvc.perform(get("/actors").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/movies").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 }
