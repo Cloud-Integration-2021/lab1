@@ -1,8 +1,8 @@
-package fr.lacazethomas.lab1.Model;
+package fr.lacazethomas.lab1.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 import java.time.LocalDate;
 
 @Entity
@@ -11,10 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Movie {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Movie extends BaseEntity {
     private String title;
     private LocalDate releaseDate;
 }

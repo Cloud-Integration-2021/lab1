@@ -1,6 +1,6 @@
 package fr.lacazethomas.lab1;
 
-import fr.lacazethomas.lab1.Controller.MovieController;
+import fr.lacazethomas.lab1.controller.MovieController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

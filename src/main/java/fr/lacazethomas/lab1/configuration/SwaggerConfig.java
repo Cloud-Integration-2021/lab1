@@ -26,7 +26,6 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(getApiInfo());
-
     }
 
     @Override
