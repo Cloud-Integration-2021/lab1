@@ -2,11 +2,7 @@ package fr.lacazethomas.lab1.controller;
 
 import fr.lacazethomas.lab1.controller.dto.BaseDTO;
 import fr.lacazethomas.lab1.service.CrudService;
-import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +34,7 @@ public abstract class CrudController<T extends BaseDTO> {
     @GetMapping("")
     @ApiOperation(value = "List all")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "getAllFallback")
-    public ResponseEntity<String> getAll(){
+    public ResponseEntity<String> getAll() {
         String response = restTemplate.getForObject("http://localhost:8081/movies", String.class);
         return new ResponseEntity<String>(response, HttpStatus.OK);
     }
@@ -49,7 +45,13 @@ public abstract class CrudController<T extends BaseDTO> {
 
     @GetMapping("{id}")
     @ApiOperation(value = "Get by Id")
-    public ResponseEntity<T> getById(@PathVariable Long id) {
+    @CircuitBreaker(name = "MovieService", fallbackMethod = "getByIdFallback")
+    public ResponseEntity<String> getById(@PathVariable Long id) {
+        String response = restTemplate.getForObject("http://localhost:8081/movies/" + id, String.class);
+        return new ResponseEntity<String>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<T> getByIdFallback(@PathVariable Long id, Exception e) {
         Optional<T> optionalT = service.findById(id);
 
         return optionalT.map(T ->
