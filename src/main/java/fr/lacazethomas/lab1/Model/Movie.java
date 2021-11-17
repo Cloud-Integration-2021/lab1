@@ -14,4 +14,5 @@ import java.time.LocalDate;
 public class Movie extends BaseEntity {
     private String title;
     private LocalDate releaseDate;
+    private String plot;
 }

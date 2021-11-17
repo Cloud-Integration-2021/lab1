@@ -16,3 +16,20 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+
+management.health.circuitbreakers.enabled: true
+management.health.ratelimiters.enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      movieService:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        waitDurationInOpenState: 5s
+        slidingWindowType: COUNT_BASED

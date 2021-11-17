@@ -2,18 +2,34 @@ package fr.lacazethomas.lab1.controller;
 
 import fr.lacazethomas.lab1.controller.dto.BaseDTO;
 import fr.lacazethomas.lab1.service.CrudService;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public abstract class CrudController<T extends BaseDTO> {
 
-    private CrudService<T> service;
+    private final CrudService<T> service;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
 
     public CrudController(CrudService<T> crudService) {
         this.service = crudService;
@@ -21,7 +37,13 @@ public abstract class CrudController<T extends BaseDTO> {
 
     @GetMapping("")
     @ApiOperation(value = "List all")
-    public ResponseEntity<List<T>> getAll() {
+    @CircuitBreaker(name = "MovieService", fallbackMethod = "getAllFallback")
+    public ResponseEntity<String> getAll(){
+        String response = restTemplate.getForObject("http://localhost:8081/movies", String.class);
+        return new ResponseEntity<String>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<T>> getAllFallback(Exception e) {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 

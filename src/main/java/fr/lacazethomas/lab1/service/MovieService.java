@@ -51,6 +51,7 @@ public class MovieService implements CrudService<MovieDTO> {
 
         savedMovie.setTitle(movieToUpdate.getTitle());
         savedMovie.setReleaseDate(movieToUpdate.getReleaseDate());
+        savedMovie.setPlot(movieToUpdate.getPlot());
 
         return INSTANCE.movieToDto(movieRepository.save(savedMovie));
     }
