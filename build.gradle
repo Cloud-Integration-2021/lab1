@@ -31,6 +31,9 @@ dependencies {
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.0.2'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+	implementation 'commons-httpclient:commons-httpclient:20020423'
+
 }
 
 test {
