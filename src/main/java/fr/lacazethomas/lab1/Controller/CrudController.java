@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -104,7 +105,10 @@ public abstract class CrudController<T extends BaseDTO> {
     @ApiOperation(value = "Update by Id")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "updateFallback")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody T body) {
-        ResponseEntity<String> resp = restTemplate.exchange(backendA + "/movies/"+id,HttpMethod.PUT, null,String.class);
+
+        HttpEntity<?> httpEntity = new HttpEntity<Object>(body, null);
+
+        ResponseEntity<String> resp = restTemplate.exchange(backendA + "/movies/"+id,HttpMethod.PUT, httpEntity,String.class);
         return new ResponseEntity<>((String) resp.getBody(), resp.getStatusCode());
     }
 
