@@ -5,6 +5,7 @@ import fr.lacazethomas.lab1.service.CrudService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ import java.util.Optional;
 public abstract class CrudController<T extends BaseDTO> {
 
     private final CrudService<T> service;
+
+    @Value("${backendA:http://localhost:8081}")
+    private String backendA;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -35,7 +39,7 @@ public abstract class CrudController<T extends BaseDTO> {
     @ApiOperation(value = "List all")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "getAllFallback")
     public ResponseEntity<String> getAll() {
-        String response = restTemplate.getForObject("http://localhost:8081/movies", String.class);
+        String response = restTemplate.getForObject(backendA+"/movies", String.class);
         return new ResponseEntity<String>(response, HttpStatus.OK);
     }
 
@@ -47,7 +51,7 @@ public abstract class CrudController<T extends BaseDTO> {
     @ApiOperation(value = "Get by Id")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "getByIdFallback")
     public ResponseEntity<String> getById(@PathVariable Long id) {
-        String response = restTemplate.getForObject("http://localhost:8081/movies/" + id, String.class);
+        String response = restTemplate.getForObject(backendA+"/movies/" + id, String.class);
         return new ResponseEntity<String>(response, HttpStatus.OK);
     }
 
