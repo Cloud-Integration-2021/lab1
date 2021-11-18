@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine AS build
-COPY --chown=gradle:gradle . /home/gradle/src
+COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle build --no-daemon 
 
