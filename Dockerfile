@@ -1,4 +1,4 @@
-FROM gradle:jdk16 AS build
+FROM gradle:jdk8 AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle build --no-daemon 
