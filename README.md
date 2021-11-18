@@ -21,13 +21,13 @@ $ docker run \
 
 ### 🐳 Option 2: Run from Docker-compose
 
-**See [here](https://github.com/Cloud-Integration-2021/lab1/blob/main/docker-compose.yml)** 
+**See [here](https://github.com/Cloud-Integration-2021/lab1/blob/master/docker-compose.yml)** 
 
 
 🌟 You are all set!
 
 ## Dockerfile
-<a href="https://github.com/Cloud-Integration-2021/lab1/blob/main/Dockerfile">Dockerfile</a>
+<a href="https://github.com/Cloud-Integration-2021/lab1/blob/master/Dockerfile">Dockerfile</a>
 
 ## License
-<a href="https://github.com/Cloud-Integration-2021/lab1/blob/main/LICENSE">MIT</a>
+<a href="https://github.com/Cloud-Integration-2021/lab1/blob/master/LICENSE">MIT</a>
