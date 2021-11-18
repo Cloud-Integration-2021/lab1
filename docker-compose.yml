@@ -9,6 +9,6 @@ services:
       environment: 
         - DATASOURCE_DB_PASSWORD=password
         - DATASOURCE_DB_USERNAME=user
-        - DATASOURCE_DB_URL=https://localhost:5432/databaseName
+        - DATASOURCE_DB_URL=jdbc:postgresql://localhost:5432/databaseName
       ports:
         - 8080:8080

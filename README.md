@@ -12,7 +12,7 @@ $ docker run \
   -v /etc/localtime:/etc/localtime:ro \
   -e "DATASOURCE_DB_PASSWORD=password" \
   -e "DATASOURCE_DB_USERNAME=user" \
-  -e "DATASOURCE_DB_URL=https://localhost:5432/databaseName" \
+  -e "DATASOURCE_DB_URL=jdbc:postgresql://localhost:5432/databaseName" \
   --restart always \
   --name lab1 \
   -p 8080:8080 \
