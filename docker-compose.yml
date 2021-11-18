@@ -1,6 +1,6 @@
 version: '2.1'
 services:
-    lab3:
+    lab1:
       image: thomaslacaze/lab1
       container_name: lab1
       volumes:
