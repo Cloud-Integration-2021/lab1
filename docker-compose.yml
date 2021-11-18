@@ -1,0 +1,14 @@
+version: '2.1'
+services:
+    lab3:
+      image: thomaslacaze/lab1
+      container_name: lab1
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+      restart: unless-stopped
+      environment: 
+        - DATASOURCE_DB_PASSWORD=password
+        - DATASOURCE_DB_USERNAME=user
+        - DATASOURCE_DB_URL=https://localhost:5432/databaseName
+      ports:
+        - 8080:8080
