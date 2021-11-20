@@ -2,6 +2,10 @@
 
 Java API Rest for lab 3
 
+## Swagger UI 
+
+[http://localhost:8080/swagger-ui/#/](http://localhost:8080/swagger-ui/#/)
+
 ## 🛠️ Installation Steps
 
 ### 🐳 Option 1: Run from Docker run
