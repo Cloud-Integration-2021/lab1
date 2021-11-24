@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 public abstract class CrudController<T extends BaseDTO> {
@@ -49,13 +50,13 @@ public abstract class CrudController<T extends BaseDTO> {
     @CircuitBreaker(name = "MovieService", fallbackMethod = "getAllFallback")
     @Retry(name = "MovieService", fallbackMethod = "getAllFallback")
     @TimeLimiter(name = "MovieService", fallbackMethod = "getAllFallback")
-    public ResponseEntity<String> getAll() {
+    public CompletableFuture<ResponseEntity<String>> getAll() {
         ResponseEntity<String> resp = restTemplate.exchange(backendA + "/movies",HttpMethod.GET, null,String.class);
-        return new ResponseEntity<>((String) resp.getBody(), resp.getStatusCode());
+        return CompletableFuture.completedFuture(new ResponseEntity<>((String) resp.getBody(), resp.getStatusCode()));
     }
 
-    public ResponseEntity<List<T>> getAllFallback(Exception e) {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    private CompletableFuture<ResponseEntity<List<T>>> getAllFallback(Exception e) {
+        return CompletableFuture.completedFuture(new ResponseEntity<>(service.findAll(), HttpStatus.OK));
     }
 
     @GetMapping("{id}")
@@ -63,24 +64,23 @@ public abstract class CrudController<T extends BaseDTO> {
     @CircuitBreaker(name = "MovieService", fallbackMethod = "getByIdFallback")
     @Retry(name = "MovieService", fallbackMethod = "getByIdFallback")
     @TimeLimiter(name = "MovieService", fallbackMethod = "getByIdFallback")
-    public ResponseEntity<String> getById(@PathVariable Long id) {
+    public CompletableFuture<ResponseEntity<String>> getById(@PathVariable Long id) {
         ResponseEntity<String> resp = restTemplate.exchange(backendA + "/movies/"+id, HttpMethod.GET, null,String.class);
-        return new ResponseEntity<>((String) resp.getBody(), resp.getStatusCode());
+        return CompletableFuture.completedFuture(new ResponseEntity<>((String) resp.getBody(), resp.getStatusCode()));
     }
 
-    public ResponseEntity<T> getByIdFallback(@PathVariable Long id, Exception e) {
+    public CompletableFuture<ResponseEntity<T>> getByIdFallback(@PathVariable Long id, Exception e) {
         Optional<T> optionalT = service.findById(id);
 
-        return optionalT.map(T ->
+        return CompletableFuture.completedFuture(optionalT.map(T ->
                         new ResponseEntity<>(T, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+                .orElse(new ResponseEntity<>(null, HttpStatus.NOT_FOUND)));
     }
 
     @PostMapping("")
     @ApiOperation(value = "Create a new one")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "saveFallback")
     @Retry(name = "MovieService", fallbackMethod = "saveFallback")
-    @TimeLimiter(name = "MovieService", fallbackMethod = "saveFallback")
     public ResponseEntity<String> save(@RequestBody T body) {
         ResponseEntity<String> resp = restTemplate.postForEntity(backendA+"/movies/", body, String.class);
         return new ResponseEntity<>((String) resp.getBody(), resp.getStatusCode());
@@ -94,7 +94,6 @@ public abstract class CrudController<T extends BaseDTO> {
     @ApiOperation(value = "Delete by Id")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "deleteFallback")
     @Retry(name = "MovieService", fallbackMethod = "deleteFallback")
-    @TimeLimiter(name = "MovieService", fallbackMethod = "deleteFallback")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         ResponseEntity<String> resp = restTemplate.exchange(backendA + "/movies/"+id,HttpMethod.DELETE, null,String.class);
 
@@ -113,7 +112,6 @@ public abstract class CrudController<T extends BaseDTO> {
     @ApiOperation(value = "Update by Id")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "updateFallback")
     @Retry(name = "MovieService", fallbackMethod = "updateFallback")
-    @TimeLimiter(name = "MovieService", fallbackMethod = "updateFallback")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody T body) {
 
         HttpEntity<?> httpEntity = new HttpEntity<Object>(body, null);
