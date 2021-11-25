@@ -38,7 +38,9 @@ public class MovieV2Controller {
     @GetMapping("{id}")
     @ApiOperation(value = "Get by Id")
     public ResponseEntity<?> getById(@PathVariable Long id) {
-        Optional<?> optionalT = movieService.findById(id);
+        Optional<MovieDTO> optionalT = movieService.findById(id);
+
+        optionalT.ifPresent(actorService::populateMovieWithActors);
 
         return optionalT.map(T ->
                         new ResponseEntity<>(T, HttpStatus.OK))
