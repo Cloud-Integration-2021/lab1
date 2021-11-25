@@ -2,7 +2,7 @@ package fr.lacazethomas.lab1.service;
 
 import fr.lacazethomas.lab1.controller.dto.ActorDTO;
 import fr.lacazethomas.lab1.controller.dto.MovieDTO;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -12,20 +12,25 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class ActorService {
     private CircuitBreakerFactory circuitBreakerFactory;
+
+    @Value("${backendA:http://localhost:8081}")
+    private String backendA;
+
+    public ActorService(CircuitBreakerFactory circuitBreakerFactory) {
+        this.circuitBreakerFactory = circuitBreakerFactory;
+    }
 
     private static List<ActorDTO> defaultActors() {
         return List.of(new ActorDTO("Doe", "John", "2020-12-22"));
     }
 
-    public List<ActorDTO> getMovieActors(String movieTitle) {
+    public List<ActorDTO> getMovieActors(Long movieId) {
         var restTemplate = new RestTemplate();
 
-        //
         return circuitBreakerFactory.create("circuitbreaker").run(() -> restTemplate.exchange(
-                        "http://localhost:8081/actors/" + movieTitle,
+                        backendA + "/movies/" +movieId+ "/actors",
                         HttpMethod.GET,
                         null,
                         new ParameterizedTypeReference<List<ActorDTO>>() {
@@ -34,7 +39,7 @@ public class ActorService {
     }
 
     public void populateMovieWithActors(MovieDTO movieDTO) {
-        List<ActorDTO> movieActors = getMovieActors(movieDTO.getTitle());
+        List<ActorDTO> movieActors = getMovieActors(movieDTO.getId());
 
         movieActors.forEach(movieDTO::addActorDTO);
     }

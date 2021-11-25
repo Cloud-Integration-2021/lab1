@@ -47,6 +47,8 @@ public class MovieControllerIntegrationTest {
     @Autowired
     MovieController movieController;
 
+    private final String BaseURL = "/api/v1";
+
     @BeforeEach
     public void setup() {
         this.mvc = MockMvcBuilders.standaloneSetup(this.movieController).build();
@@ -55,7 +57,7 @@ public class MovieControllerIntegrationTest {
 
     @Test
     public void getAllMovies() throws Exception {
-        mvc.perform(get("/movies").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get(BaseURL+"/movies").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -63,7 +65,7 @@ public class MovieControllerIntegrationTest {
     public void postMovie() throws Exception {
         Movie m1 = new Movie("je suis un title", LocalDate.now(), "je suis un plot");
         mvc.perform(
-                        post("/movies")
+                        post(BaseURL+"/movies")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(m1)
                                 ))
@@ -80,7 +82,7 @@ public class MovieControllerIntegrationTest {
 
         // When
         MvcResult mvcResult = mvc.perform(
-                        get("/movies")
+                        get(BaseURL+"/movies")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(request().asyncStarted())
@@ -110,7 +112,7 @@ public class MovieControllerIntegrationTest {
 
         // When
         mvc.perform(
-                        delete("/movies/"+m2.getId())
+                        delete(BaseURL+"/movies/"+m2.getId())
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -131,7 +133,7 @@ public class MovieControllerIntegrationTest {
 
         // When
         mvc.perform(
-                        put("/movies/"+m.getId())
+                        put(BaseURL+"/movies/"+m.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(editDto)))
                 .andExpect(status().isOk());
@@ -139,7 +141,7 @@ public class MovieControllerIntegrationTest {
 
         // When
         MvcResult mvcResult = mvc.perform(
-                        get("/movies")
+                        get(BaseURL+"/movies")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(request().asyncStarted())

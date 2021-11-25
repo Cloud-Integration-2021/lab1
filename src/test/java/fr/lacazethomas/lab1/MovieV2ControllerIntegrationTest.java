@@ -47,6 +47,8 @@ public class MovieV2ControllerIntegrationTest {
     @Autowired
     MovieV2Controller movieController;
 
+    private final String BaseURL = "/api/v2";
+
     @BeforeEach
     public void setup() {
         this.mvc = MockMvcBuilders.standaloneSetup(this.movieController).build();
@@ -55,7 +57,7 @@ public class MovieV2ControllerIntegrationTest {
 
     @Test
     public void getAllMovies() throws Exception {
-        mvc.perform(get("/V2/movies").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get(BaseURL+"/movies").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -63,7 +65,7 @@ public class MovieV2ControllerIntegrationTest {
     public void postMovie() throws Exception {
         Movie m1 = new Movie("je suis un title", LocalDate.now(), "je suis un plot");
         mvc.perform(
-                        post("/V2/movies")
+                        post(BaseURL+"/movies")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(m1)
                                 ))
@@ -82,7 +84,7 @@ public class MovieV2ControllerIntegrationTest {
 
         // When
         mvc.perform(
-                        get("/V2/movies")
+                        get(BaseURL+"/movies")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
 
@@ -111,7 +113,7 @@ public class MovieV2ControllerIntegrationTest {
 
         // When
         mvc.perform(
-                        delete("/V2/movies/" + m2.getId())
+                        delete(BaseURL+"/movies/" + m2.getId())
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -132,14 +134,14 @@ public class MovieV2ControllerIntegrationTest {
 
         // When
         mvc.perform(
-                        put("/V2/movies/" + m.getId())
+                        put(BaseURL+"/movies/" + m.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(editDto)))
                 .andExpect(status().isOk());
 
         // Then
         mvc.perform(
-                        get("/V2/movies")
+                        get(BaseURL+"/movies")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
 

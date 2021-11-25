@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("V2/movies")
+@RequestMapping("/api/v2/movies")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class MovieV2Controller {
 
