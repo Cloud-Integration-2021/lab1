@@ -11,6 +11,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -56,8 +57,9 @@ public class MovieController {
     @CircuitBreaker(name = "MovieService", fallbackMethod = "getAllFallback")
     @Retry(name = "MovieService", fallbackMethod = "getAllFallback")
     @TimeLimiter(name = "MovieService", fallbackMethod = "getAllFallback")
-    public CompletableFuture<ResponseEntity<String>> getAll() {
-        ResponseEntity<String> resp = restTemplate.exchange(backendA + "/movies", HttpMethod.GET, null, String.class);
+    public CompletableFuture<ResponseEntity<List<MovieDTO>>> getAll() {
+        ResponseEntity<List<MovieDTO>> resp = restTemplate.exchange(backendA + "/movies", HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+        });
         return CompletableFuture.completedFuture(new ResponseEntity<>(resp.getBody(), resp.getStatusCode()));
     }
 
@@ -70,8 +72,9 @@ public class MovieController {
     @CircuitBreaker(name = "MovieService", fallbackMethod = "getByIdFallback")
     @Retry(name = "MovieService", fallbackMethod = "getByIdFallback")
     @TimeLimiter(name = "MovieService", fallbackMethod = "getByIdFallback")
-    public CompletableFuture<ResponseEntity<String>> getById(@PathVariable Long id) {
-        ResponseEntity<String> resp = restTemplate.exchange(backendA + "/movies/" + id, HttpMethod.GET, null, String.class);
+    public CompletableFuture<ResponseEntity<MovieDTO>> getById(@PathVariable Long id) {
+        ResponseEntity<MovieDTO> resp = restTemplate.exchange(backendA + "/movies/" + id, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+        });
         return CompletableFuture.completedFuture(new ResponseEntity<>(resp.getBody(), resp.getStatusCode()));
     }
 
@@ -87,8 +90,9 @@ public class MovieController {
     @ApiOperation(value = "Create a new one")
     @CircuitBreaker(name = "MovieService", fallbackMethod = "saveFallback")
     @Retry(name = "MovieService", fallbackMethod = "saveFallback")
-    public ResponseEntity<String> save(@RequestBody MovieDTO body) {
-        ResponseEntity<String> resp = restTemplate.postForEntity(backendA + "/movies/", body, String.class);
+    public ResponseEntity<MovieDTO> save(@RequestBody MovieDTO body) {
+        ResponseEntity<MovieDTO> resp = restTemplate.postForEntity(backendA + "/movies/", body, null, new ParameterizedTypeReference<>() {
+        });
         return new ResponseEntity<>(resp.getBody(), resp.getStatusCode());
     }
 
